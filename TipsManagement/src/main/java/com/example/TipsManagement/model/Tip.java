@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -43,6 +44,7 @@ public class Tip {
     @Enumerated(EnumType.STRING)
     private TipMethod tipMethod;
 
-    
+    @NotNull
+    private LocalDate date;
 
 }
