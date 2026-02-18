@@ -1,14 +1,13 @@
 package com.example.TipsManagement.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tipster {
@@ -18,5 +17,6 @@ public class Tipster {
     private Long id;
 
     @NotNull
+    @Column(unique = true, nullable = false)
     private String name;
 }

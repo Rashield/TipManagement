@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ITipsterRepository extends JpaRepository<Tipster, Long> {
-
+    boolean existsByName(String name);
 }
