@@ -12,7 +12,7 @@ public interface IUnitValueRepository extends JpaRepository<UnitValue, Long> {
 //    findTopBy > retorna apenas um registro
 //    StartDateLessThan > somente retorna datas menores que a passada
 //    OrderByStartDateDesc > ordena pela data de maneira decrescente
-    Optional<UnitValue> findTopByStartDateLessThanEqualOrderByStartDateDesc(LocalDate date);
+    Optional<UnitValue> findTopByStartDateLessThanEqualOrderByStartDateDescIdDesc(LocalDate date);
     boolean existsByStartDate(String name);
 
 }

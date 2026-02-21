@@ -22,12 +22,10 @@ public class Tip {
 
     @ManyToOne
     @JoinColumn (name = "CasaAposta_id")
-    @Column(nullable = false)
     private CasaAposta house;
 
     @ManyToOne
     @JoinColumn (name = "Tipster_id")
-    @Column(nullable = false)
     private Tipster tipster;
 
     @Enumerated(EnumType.STRING)

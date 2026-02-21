@@ -4,13 +4,10 @@ import com.example.TipsManagement.controller.dto.UnitValueRequest;
 import com.example.TipsManagement.service.UnitValueService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/UnitValue")
+@RequestMapping("/unitValue")
 public class UnitValueController {
 
     private final UnitValueService unitValueService;
@@ -26,5 +23,15 @@ public class UnitValueController {
                 .body(unitValueService.save(unitValueRequest));
     }
 
-    @
+    @GetMapping("/current")
+    public ResponseEntity<Object> getUnit(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(unitValueService.getCurrentUnit());
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> listALLUnits(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(unitValueService.listAll());
+    }
 }
