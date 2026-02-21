@@ -1,7 +1,6 @@
 package com.example.TipsManagement.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
@@ -16,7 +15,7 @@ public class Tipster {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+
     @Column(unique = true, nullable = false)
     private String name;
 }

@@ -1,9 +1,9 @@
 package com.example.TipsManagement.model;
 
-import com.example.TipsManagement.enums.Result;
-import com.example.TipsManagement.enums.TipMethod;
+import com.example.TipsManagement.model.enums.Result;
+import com.example.TipsManagement.model.enums.Sport;
+import com.example.TipsManagement.model.enums.TipMethod;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -22,21 +22,24 @@ public class Tip {
 
     @ManyToOne
     @JoinColumn (name = "CasaAposta_id")
+    @Column(nullable = false)
     private CasaAposta house;
 
     @ManyToOne
     @JoinColumn (name = "Tipster_id")
+    @Column(nullable = false)
     private Tipster tipster;
 
-    @ManyToOne
-    @JoinColumn(name = "Sport_id")
+    @Enumerated(EnumType.STRING)
     private Sport sport;
 
-    @NotNull
+    @Column(nullable = false)
     private BigDecimal odd;
 
     @Enumerated(EnumType.STRING)
     private Result result;
+
+    private BigDecimal resultValue;
 
     private String teamA;
 
@@ -45,7 +48,15 @@ public class Tip {
     @Enumerated(EnumType.STRING)
     private TipMethod tipMethod;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = false)
+    private BigDecimal unit; // Ex: 1U, 2.5U
+
+    @Column(nullable = false)
+    private BigDecimal unitValue; // VALOR em R$ na data
+
+
 
 }

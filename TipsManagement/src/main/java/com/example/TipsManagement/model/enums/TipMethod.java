@@ -1,4 +1,4 @@
-package com.example.TipsManagement.enums;
+package com.example.TipsManagement.model.enums;
 
 
 

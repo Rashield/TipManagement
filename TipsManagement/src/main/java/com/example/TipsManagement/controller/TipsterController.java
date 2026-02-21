@@ -20,21 +20,14 @@ public class TipsterController {
 
     @PostMapping
     public ResponseEntity<Object> saveTipster(@RequestBody TipsterRequest tipster){
-        try{
-            //Chama o service para salvar e após isso retorna os valores salvos
-            tipsterService.save(tipster);
-            return new ResponseEntity<>(tipster, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(tipsterService.save(tipster));
+
     }
 
     @GetMapping
     public ResponseEntity<Object> listAllTipster(){
-        try{
-            return new ResponseEntity<>(tipsterService.listAll(),HttpStatus.OK);
-        } catch (IllegalArgumentException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(tipsterService.listAll());
     }
 }
