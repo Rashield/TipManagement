@@ -21,8 +21,8 @@ public class Tip {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name = "CasaAposta_id")
-    private CasaAposta house;
+    @JoinColumn (name = "BetHouse_id")
+    private BetHouse betHouse;
 
     @ManyToOne
     @JoinColumn (name = "Tipster_id")

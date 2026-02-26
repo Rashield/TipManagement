@@ -30,7 +30,7 @@ public class UnitValueController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> listALLUnits(){
+    public ResponseEntity<Object> listAllUnits(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(unitValueService.listAll());
     }

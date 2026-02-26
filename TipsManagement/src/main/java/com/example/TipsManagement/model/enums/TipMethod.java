@@ -3,8 +3,7 @@ package com.example.TipsManagement.model.enums;
 
 
 public enum TipMethod {
-    A_WINNER,
-    B_WINNER,
+    WINNER,
     OVER_KILL,
     UNDER_KILL,
     OVER_DRAGON,
@@ -18,7 +17,8 @@ public enum TipMethod {
     UNDER_TOWER,
     OVER_TIME,
     UNDER_TIME,
-    DOUBLE,
+    UNDER_ROUND,
+    OVER_ROUND,
     MULTIPLE,
-    A_MOST_KILL
+    PLAYER_KILL_DUEL
 }
