@@ -2,12 +2,11 @@ package com.example.TipsManagement.service;
 
 import com.example.TipsManagement.Exception.BadRequestException;
 import com.example.TipsManagement.Exception.BusinessException;
+import com.example.TipsManagement.Exception.NotFoundException;
 import com.example.TipsManagement.controller.dto.TipsterRequest;
 import com.example.TipsManagement.model.Tipster;
 import com.example.TipsManagement.repository.ITipsterRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
@@ -36,6 +35,9 @@ public class TipsterService {
 
     public List<Tipster> listAll(){
         List<Tipster> list = iTipsterRepository.findAll();
+        if (list.isEmpty()){
+            throw new NotFoundException("Não existe Tipster cadastrado.");
+        }
         return list;
     }
 }
