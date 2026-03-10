@@ -28,6 +28,10 @@ public class Tip {
     @JoinColumn (name = "Tipster_id")
     private Tipster tipster;
 
+    @ManyToOne
+    @JoinColumn (name = "Usuario_id")
+    private Usuario usuario;
+
     @Enumerated(EnumType.STRING)
     private Sport sport;
 
@@ -37,11 +41,13 @@ public class Tip {
     @Enumerated(EnumType.STRING)
     private Result result;
 
-    private BigDecimal resultValue;
+    private BigDecimal resultValue; //deve ser unitValue * unit * odd
 
     private String teamA;
 
     private String teamB;
+
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private TipMethod tipMethod;
@@ -54,7 +60,6 @@ public class Tip {
 
     @Column(nullable = false)
     private BigDecimal unitValue; // VALOR em R$ na data
-
 
 
 }

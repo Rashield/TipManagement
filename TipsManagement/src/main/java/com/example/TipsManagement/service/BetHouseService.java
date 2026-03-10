@@ -5,11 +5,9 @@ import com.example.TipsManagement.Exception.BusinessException;
 import com.example.TipsManagement.Exception.NotFoundException;
 import com.example.TipsManagement.controller.dto.BetHouseRequest;
 import com.example.TipsManagement.model.BetHouse;
-import com.example.TipsManagement.model.Tipster;
 import com.example.TipsManagement.repository.IBetHouseRepository;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
-
 import java.util.List;
 
 @Service

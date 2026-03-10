@@ -14,6 +14,6 @@ public interface IUnitValueRepository extends JpaRepository<UnitValue, Long> {
 //    OrderByStartDateDesc > ordena pela data de maneira decrescente
     //IdDesc para ordenar por ID e em caso de datas iguais pegar o ultimo cadastrado
     Optional<UnitValue> findTopByStartDateLessThanEqualOrderByStartDateDescIdDesc(LocalDate date);
-    boolean existsByStartDate(String name);
+
 
 }
