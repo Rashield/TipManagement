@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TipsterService {
@@ -39,5 +40,23 @@ public class TipsterService {
             throw new NotFoundException("Não existe Tipster cadastrado.");
         }
         return list;
+    }
+
+    public Tipster edit(Long id,TipsterRequest tipsterRequest){
+        if(tipsterRequest.getName().length()<3){
+            throw new BadRequestException("Número de caracteres insuficiente (min. 3)");
+        }
+        Tipster tipster  = new Tipster();
+        tipster.setId(id);
+        tipster.setName(tipsterRequest.getName());
+
+        return iTipsterRepository.save(tipster);
+    }
+
+    public void delete(Long id){
+        if(!iTipsterRepository.existsById(id)){
+            throw new NotFoundException("Tipster não encontrado.");
+        }
+        iTipsterRepository.deleteById(id);
     }
 }

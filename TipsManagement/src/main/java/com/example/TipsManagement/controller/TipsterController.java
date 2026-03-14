@@ -30,4 +30,16 @@ public class TipsterController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(tipsterService.listAll());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> editTipster(@PathVariable Long id, @RequestBody TipsterRequest tipsterRequest){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(tipsterService.edit(id, tipsterRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteTipster(@PathVariable Long id){
+        tipsterService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

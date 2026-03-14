@@ -16,4 +16,8 @@ public class Tipster {
     private Long id;
 
     private String name;
+
+    @JoinColumn(name = "usuario_id")
+    @ManyToOne
+    private Usuario usuario;
 }
