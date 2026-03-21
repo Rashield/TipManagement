@@ -33,17 +33,11 @@ public class AuthService {
         );
 
         Usuario user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() ->
-                        new NotFoundException("Usuário não encontrado."));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-        String token = jwtService.generateToken(
-                org.springframework.security.core.userdetails.User
-                        .withUsername(user.getEmail())
-                        .password(user.getPassword())
-                        .roles("USER")
-                        .build()
-        );
+        String token = jwtService.generateToken(user);
 
         return new AuthResponse(token);
     }
 }
+
