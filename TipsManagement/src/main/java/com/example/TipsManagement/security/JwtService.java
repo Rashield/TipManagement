@@ -1,5 +1,6 @@
 package com.example.TipsManagement.security;
 
+import com.example.TipsManagement.model.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,19 +18,14 @@ public class JwtService {
     private final String SECRET_KEY =
             "my-super-secret-key-my-super-secret-key";
 
-    public String generateToken(UserDetails user){
+    public String generateToken(Usuario user){
 
-        //Cria um token Jwt com usuario, data atual e expiração para daqui 24h
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
+                .claim("userId", user.getId())
                 .setIssuedAt(new Date())
-                .setExpiration(
-                        new Date(System.currentTimeMillis() + 86400000)
-                )
-                .signWith(
-                        Keys.hmacShaKeyFor(SECRET_KEY.getBytes()),
-                        SignatureAlgorithm.HS256
-                )
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -60,15 +56,17 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    //metodos para extrair o usuario e expiracao do token
+    //metodos para extrair o usuario, expiracao do token e UserID
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
-    private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+    public Long extractUserId(String token){
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
+    private Key getSignKey(){
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 }
