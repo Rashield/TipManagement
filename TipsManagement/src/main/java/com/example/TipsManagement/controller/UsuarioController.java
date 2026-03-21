@@ -28,4 +28,9 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(usuarioService.listAll());
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> editUsuario(@PathVariable Long id,@RequestBody UsuarioRequest usuarioRequest){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(usuarioService.edit(id, usuarioRequest));
+    }
 }
