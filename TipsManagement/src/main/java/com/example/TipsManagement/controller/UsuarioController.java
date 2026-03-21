@@ -5,10 +5,7 @@ import com.example.TipsManagement.model.Usuario;
 import com.example.TipsManagement.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuario")
@@ -24,5 +21,11 @@ public class UsuarioController {
     public ResponseEntity<Usuario> saveUsuario(@RequestBody UsuarioRequest usuarioRequest){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(usuarioService.save(usuarioRequest));
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> listUsuario(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(usuarioService.listAll());
     }
 }
