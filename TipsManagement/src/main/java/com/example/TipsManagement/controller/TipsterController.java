@@ -3,7 +3,6 @@ package com.example.TipsManagement.controller;
 
 import com.example.TipsManagement.controller.dto.TipsterRequest;
 import com.example.TipsManagement.service.TipsterService;
-import org.hibernate.mapping.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +37,7 @@ public class TipsterController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTipster(@PathVariable Long id){
+    public ResponseEntity<Void> deleteTipster(@PathVariable Long id){
         tipsterService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
