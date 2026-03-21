@@ -54,9 +54,10 @@ public class TipsterService {
     }
 
     public void delete(Long id){
-        if(!iTipsterRepository.existsById(id)){
-            throw new NotFoundException("Tipster não encontrado.");
-        }
-        iTipsterRepository.deleteById(id);
+        Tipster tipster = iTipsterRepository.findById(id)
+                .orElseThrow(() ->
+                        new NotFoundException("Tipster não encontrado"));
+
+        iTipsterRepository.delete(tipster);
     }
 }
