@@ -2,12 +2,13 @@ package com.example.TipsManagement.service;
 
 import com.example.TipsManagement.Exception.BadRequestException;
 import com.example.TipsManagement.Exception.BusinessException;
-import com.example.TipsManagement.controller.dto.UsuarioRequest;
-import com.example.TipsManagement.model.Tipster;
+import com.example.TipsManagement.model.dto.Request.UsuarioRequest;
+import com.example.TipsManagement.model.dto.Response.UsuarioResponse;
 import com.example.TipsManagement.model.Usuario;
 import com.example.TipsManagement.repository.IUsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -16,13 +17,15 @@ public class UsuarioService {
 
     private final IUsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper mapper;
 
-    public UsuarioService(IUsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(IUsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, ObjectMapper mapper) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mapper = mapper;
     }
 
-    public Usuario save(UsuarioRequest usuarioRequest){
+    public UsuarioResponse save(UsuarioRequest usuarioRequest){
         if(usuarioRequest.getName().length()<3){
             throw new BadRequestException("Número de caracteres insuficiente (min. 3)");
         }
@@ -34,14 +37,17 @@ public class UsuarioService {
         usuario.setEmail(usuarioRequest.getEmail());
         usuario.setPassword(passwordEncoder.encode(usuarioRequest.getPassword()));
 
-        return usuarioRepository.save(usuario);
+        return mapper.convertValue(usuarioRepository.save(usuario), UsuarioResponse.class);
     }
 
-    public List<Usuario> listAll(){
-        return usuarioRepository.findAll();
+    public List<UsuarioResponse> listAll(){
+        return usuarioRepository.findAll()
+                .stream()
+                .map(usuario -> mapper.convertValue(usuario, UsuarioResponse.class))
+                .toList();
     }
 
-    public Usuario edit(Long id, UsuarioRequest usuarioRequest){
+    public UsuarioResponse edit(Long id, UsuarioRequest usuarioRequest){
         if(usuarioRequest.getName().length()<3){
             throw new BadRequestException("Número de caracteres insuficiente (min. 3)");
         }
@@ -50,7 +56,6 @@ public class UsuarioService {
         usuario.setName(usuarioRequest.getName());
         usuario.setEmail(usuarioRequest.getEmail());
         usuario.setPassword(passwordEncoder.encode(usuarioRequest.getPassword()));
-
-        return usuarioRepository.save(usuario);
+        return mapper.convertValue(usuarioRepository.save(usuario), UsuarioResponse.class);
     }
 }
