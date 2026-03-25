@@ -1,8 +1,9 @@
 package com.example.TipsManagement.controller;
 
 
-import com.example.TipsManagement.controller.dto.TipsterRequest;
+import com.example.TipsManagement.model.dto.Request.TipsterRequest;
 import com.example.TipsManagement.model.LoggedUser;
+import com.example.TipsManagement.model.dto.Response.TipsterResponse;
 import com.example.TipsManagement.service.TipsterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class TipsterController {
 
 
     @PostMapping
-    public ResponseEntity<Object> saveTipster(@AuthenticationPrincipal LoggedUser usuario, @RequestBody TipsterRequest tipster){
+    public ResponseEntity<TipsterResponse> saveTipster(@AuthenticationPrincipal LoggedUser usuario, @RequestBody TipsterRequest tipster){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(tipsterService.save(usuario.getId(), tipster));
 
@@ -33,14 +34,14 @@ public class TipsterController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> editTipster(@PathVariable Long id, @RequestBody TipsterRequest tipsterRequest){
+    public ResponseEntity<Object> editTipster(@AuthenticationPrincipal LoggedUser usuario, @PathVariable Long id, @RequestBody TipsterRequest tipsterRequest){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(tipsterService.edit(id, tipsterRequest));
+                .body(tipsterService.edit(usuario.getId(),id, tipsterRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTipster(@PathVariable Long id){
-        tipsterService.delete(id);
+    public ResponseEntity<Void> deleteTipster(@AuthenticationPrincipal LoggedUser usuario, @PathVariable Long id){
+        tipsterService.delete(usuario.getId(), id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
