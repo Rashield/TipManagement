@@ -1,4 +1,4 @@
-package com.example.TipsManagement.controller.dto;
+package com.example.TipsManagement.model.dto.Response;
 
 import lombok.Data;
 

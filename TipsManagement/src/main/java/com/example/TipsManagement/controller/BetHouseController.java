@@ -1,6 +1,6 @@
 package com.example.TipsManagement.controller;
 
-import com.example.TipsManagement.controller.dto.BetHouseRequest;
+import com.example.TipsManagement.model.dto.Request.BetHouseRequest;
 import com.example.TipsManagement.model.BetHouse;
 import com.example.TipsManagement.service.BetHouseService;
 import org.springframework.http.HttpStatus;

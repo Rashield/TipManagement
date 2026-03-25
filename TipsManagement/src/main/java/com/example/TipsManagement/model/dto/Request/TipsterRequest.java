@@ -1,4 +1,4 @@
-package com.example.TipsManagement.controller.dto;
+package com.example.TipsManagement.model.dto.Request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;

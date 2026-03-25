@@ -1,4 +1,4 @@
-package com.example.TipsManagement.controller.dto;
+package com.example.TipsManagement.model.dto.Request;
 
 import jakarta.validation.constraints.Email;
 import lombok.Data;

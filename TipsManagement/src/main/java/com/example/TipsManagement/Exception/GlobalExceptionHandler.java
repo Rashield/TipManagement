@@ -1,6 +1,6 @@
 package com.example.TipsManagement.Exception;
 
-import com.example.TipsManagement.controller.dto.ErrorResponse;
+import com.example.TipsManagement.model.dto.Response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
