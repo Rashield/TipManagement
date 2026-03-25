@@ -36,7 +36,7 @@ public class UnitValueService {
         return mapper.convertValue(unitValueRepository.save(unitValue), UnitValueResponse.class);
     }
     public UnitValueResponse getCurrentUnit(Long userId){
-        UnitValue currentUnit = unitValueRepository.findTopByUsuarioIdAndStartDateLessThanEqualOrderByStartDateDescIdDesc(userId, LocalDate.now())
+        UnitValue currentUnit = unitValueRepository.findTopByUsuarioIdOrderByIdDesc(userId)
                 .orElseThrow(() ->
                 new NotFoundException("Não existe unidade cadastrada."));
         return mapper.convertValue(currentUnit, UnitValueResponse.class);
