@@ -14,4 +14,6 @@ public interface ITipsterRepository extends JpaRepository<Tipster, Long> {
     Optional<Tipster> findByName(String name);
 
     List<Tipster> findAllByUsuarioId(Long id);
+
+    Optional<Tipster> findByIdAndUsuarioId(Long id, Long userId);
 }
