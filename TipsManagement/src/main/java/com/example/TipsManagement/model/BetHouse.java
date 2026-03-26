@@ -21,4 +21,7 @@ public class BetHouse {
     @JoinColumn(name = "usuario_id")
     @ManyToOne
     private Usuario usuario;
+
+    @OneToOne(mappedBy = "betHouse")
+    private Banca banca;
 }
