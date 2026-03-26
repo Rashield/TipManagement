@@ -17,4 +17,8 @@ public class BetHouse {
 
     @Column(nullable = false)
     private String name;
+
+    @JoinColumn(name = "usuario_id")
+    @ManyToOne
+    private Usuario usuario;
 }
