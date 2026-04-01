@@ -22,6 +22,4 @@ public class BetHouse {
     @ManyToOne
     private Usuario usuario;
 
-    @OneToOne(mappedBy = "betHouse")
-    private Banca banca;
 }
