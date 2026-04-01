@@ -9,7 +9,7 @@ import com.example.TipsManagement.model.dto.Response.BancaResponse;
 import com.example.TipsManagement.repository.IBancaRepository;
 import com.example.TipsManagement.repository.IBetHouseRepository;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
+
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class BancaService {
     private final IBetHouseRepository betHouseRepository;
     private final BancaMapper bancaMapper;
 
-    public BancaService(IBancaRepository bancaRepository, ObjectMapper mapper, IBetHouseRepository betHouseRepository, BancaMapper bancaMapper) {
+    public BancaService(IBancaRepository bancaRepository, IBetHouseRepository betHouseRepository, BancaMapper bancaMapper) {
         this.bancaRepository = bancaRepository;
         this.betHouseRepository = betHouseRepository;
         this.bancaMapper = bancaMapper;
