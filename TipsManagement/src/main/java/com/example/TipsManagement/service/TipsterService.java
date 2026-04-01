@@ -8,8 +8,8 @@ import com.example.TipsManagement.model.Tipster;
 import com.example.TipsManagement.model.Usuario;
 import com.example.TipsManagement.model.dto.Response.TipsterResponse;
 import com.example.TipsManagement.repository.ITipsterRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -57,8 +57,8 @@ public class TipsterService {
         }
 
         Tipster tipster = tipsterRepository.findByIdAndUsuarioId(id, userId)
-                .orElseThrow(() ->
-                        new NotFoundException("Tipster não encontrado"));
+                            .orElseThrow(() ->
+                                    new NotFoundException("Tipster não encontrado"));
 
         tipster.setName(tipsterRequest.getName());
         return mapper.convertValue(tipsterRepository.save(tipster), TipsterResponse.class);

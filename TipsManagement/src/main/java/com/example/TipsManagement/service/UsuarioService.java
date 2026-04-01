@@ -6,9 +6,10 @@ import com.example.TipsManagement.model.dto.Request.UsuarioRequest;
 import com.example.TipsManagement.model.dto.Response.UsuarioResponse;
 import com.example.TipsManagement.model.Usuario;
 import com.example.TipsManagement.repository.IUsuarioRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
+
 
 import java.util.List;
 
