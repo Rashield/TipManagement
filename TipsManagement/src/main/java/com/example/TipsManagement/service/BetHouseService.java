@@ -7,10 +7,10 @@ import com.example.TipsManagement.model.Usuario;
 import com.example.TipsManagement.model.dto.Request.BetHouseRequest;
 import com.example.TipsManagement.model.BetHouse;
 import com.example.TipsManagement.model.dto.Response.BetHouseResponse;
-import com.example.TipsManagement.model.dto.Response.TipsterResponse;
+import com.example.TipsManagement.repository.IBancaRepository;
 import com.example.TipsManagement.repository.IBetHouseRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @Service
@@ -18,9 +18,11 @@ public class BetHouseService {
     private final IBetHouseRepository betHouseRepository;
     private final ObjectMapper mapper;
 
-    public BetHouseService(IBetHouseRepository betHouseRepository, ObjectMapper mapper) {
+    private final IBancaRepository bancaRepository;
+    public BetHouseService(IBetHouseRepository betHouseRepository, ObjectMapper mapper, IBancaRepository bancaRepository) {
         this.betHouseRepository = betHouseRepository;
         this.mapper = mapper;
+        this.bancaRepository = bancaRepository;
     }
 
     public BetHouseResponse save(Long userId, BetHouseRequest betHouseRequest){
@@ -66,6 +68,9 @@ public class BetHouseService {
         BetHouse betHouse = betHouseRepository.findByIdAndUsuarioId(id, userId)
                 .orElseThrow(() ->
                         new NotFoundException("Não existe casa de Aposta com esse Id."));
+
+        bancaRepository.findByIdAndBetHouse_UsuarioId(id, userId)
+                .ifPresent(bancaRepository::delete);
         betHouseRepository.delete(betHouse);
     }
 }
