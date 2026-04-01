@@ -16,9 +16,11 @@ public class Banca {
 
     private BigDecimal balance;
 
-    private BigDecimal totalDeposit;
+    @Column(nullable = false)
+    private BigDecimal totalDeposit = BigDecimal.ZERO;
 
-    private BigDecimal totalWithdraw;
+    @Column(nullable = false)
+    private BigDecimal totalWithdraw = BigDecimal.ZERO;
 
     @OneToOne
     @JoinColumn(name = "bethouse_id")
