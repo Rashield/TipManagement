@@ -9,6 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface IBancaRepository extends JpaRepository<Banca, Long> {
-    List<Banca> findAllByUsuarioId(Long userId);
-    Optional<Banca> findByIdAndUsuarioId(Long id, Long userId);
+//    List<Banca> findAllByUsuarioId(Long userId);
+//    Optional<Banca> findByIdAndUsuarioId(Long id, Long userId);
+
+    List<Banca> findAllByBetHouse_UsuarioId(Long usuarioId);
+    Optional<Banca> findByIdAndBetHouse_UsuarioId(Long id, Long userId);
+    Optional<Banca> findByBetHouseIdAndBetHouse_UsuarioId(Long betHouseId, Long userId);
 }
