@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface IBancaRepository extends JpaRepository<Banca, Long> {
-    List<Banca> findAllByBetHouse_UsuarioId(Long usuarioId);
+    List<Banca> findAllByBetHouse_UsuarioId(Long userId);
     Optional<Banca> findByIdAndBetHouse_UsuarioId(Long id, Long userId);
     Optional<Banca> findByBetHouseIdAndBetHouse_UsuarioId(Long betHouseId, Long userId);
+
 }
