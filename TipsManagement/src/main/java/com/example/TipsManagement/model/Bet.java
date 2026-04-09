@@ -2,7 +2,6 @@ package com.example.TipsManagement.model;
 
 import com.example.TipsManagement.model.enums.Result;
 import com.example.TipsManagement.model.enums.Sport;
-import com.example.TipsManagement.model.enums.TipMethod;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tip {
+public class Bet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +48,8 @@ public class Tip {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private TipMethod tipMethod;
+//    @Enumerated(EnumType.STRING)
+//    private TipMethod tipMethod;
 
     @Column(nullable = false)
     private LocalDate date;
