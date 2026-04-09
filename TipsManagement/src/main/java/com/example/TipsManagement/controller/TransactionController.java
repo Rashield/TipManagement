@@ -26,5 +26,11 @@ public class TransactionController {
                 .body(transactionService.deposit(usuario.getId(), bancaId, transactionRequest));
     }
 
-//    @PostMapping("/withdraw")
+    @PostMapping("/withdraw")
+    public ResponseEntity<TransactionResponse> withdraw(@AuthenticationPrincipal LoggedUser usuario, @PathVariable Long bancaId, @RequestBody TransactionRequest transactionRequest){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(transactionService.withdraw(usuario.getId(),bancaId,transactionRequest));
+    }
+
+//
 }
