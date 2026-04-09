@@ -1,5 +1,6 @@
 package com.example.TipsManagement.model;
 
+import com.example.TipsManagement.Exception.BadRequestException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,16 @@ public class Banca {
     @JoinColumn(name = "bethouse_id")
     private BetHouse betHouse;
 
+    public void deposit(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+        this.totalDeposit = this.totalDeposit.add(amount);
+    }
+
+    public void withdraw(BigDecimal amount) {
+        if (this.balance.compareTo(amount) < 0) {
+            throw new BadRequestException("Saldo insuficiente.");
+        }
+        this.balance = this.balance.subtract(amount);
+        this.totalWithdraw = this.totalWithdraw.add(amount);
+    }
 }
