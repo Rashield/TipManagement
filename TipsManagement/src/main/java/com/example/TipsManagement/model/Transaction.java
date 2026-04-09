@@ -1,6 +1,7 @@
 package com.example.TipsManagement.model;
 
 import com.example.TipsManagement.model.enums.TransactionType;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,7 @@ public class Transaction {
 
     @ManyToOne
     private Banca banca;
+
+    @ManyToOne
+    private Bet bet;
 }
