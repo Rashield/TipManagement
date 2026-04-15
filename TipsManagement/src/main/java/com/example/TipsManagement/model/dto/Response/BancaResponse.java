@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 public class BancaResponse {
     private Long id;
     private BigDecimal balance;
-    private BetHouseResponse betHouseResponse;
+    private BetHouseResponse betHouse;
 }

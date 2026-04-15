@@ -17,7 +17,7 @@ public class BancaMapper {
         betHouse.setId(banca.getBetHouse().getId());
         betHouse.setName(banca.getBetHouse().getName());
 
-        response.setBetHouseResponse(betHouse);
+        response.setBetHouse(betHouse);
 
         return response;
     }
