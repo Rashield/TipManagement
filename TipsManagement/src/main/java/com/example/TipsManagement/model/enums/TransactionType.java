@@ -4,5 +4,5 @@ public enum TransactionType {
     DEPOSIT,
     WITHDRAW,
     BET,
-    WIN
+    BET_WIN
 }
