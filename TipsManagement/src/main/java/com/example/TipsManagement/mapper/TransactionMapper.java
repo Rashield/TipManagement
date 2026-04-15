@@ -15,13 +15,14 @@ public class TransactionMapper {
 
     public TransactionResponse toResponse(Transaction transaction) {
         TransactionResponse response = new TransactionResponse();
-        response.setId(transaction.getId());
+        response.setTransactionId(transaction.getId());
         response.setAmount(transaction.getAmount());
         response.setTransactionType(transaction.getTransactionType());
         response.setDate(transaction.getDate());
-
-        response.setBancaResponse(bancaMapper.toResponse(transaction.getBanca()));
+        //ainda é preciso adicionar o mapper de Bet para BetSummaryResponse
+        response.setBanca(bancaMapper.toResponse(transaction.getBanca()));
 
         return response;
     }
+
 }
