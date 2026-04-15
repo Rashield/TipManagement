@@ -6,5 +6,5 @@ public enum Sport {
     CS,
     VALORANT,
     FUTEBOL,
-    NBA
+    BASQUETE
 }
