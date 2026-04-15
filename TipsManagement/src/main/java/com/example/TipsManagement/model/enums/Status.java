@@ -1,6 +1,6 @@
 package com.example.TipsManagement.model.enums;
 
-public enum Result {
+public enum Status {
     GREEN,
     RED,
     PENDING,
