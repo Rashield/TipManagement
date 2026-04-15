@@ -1,7 +1,6 @@
 package com.example.TipsManagement.controller;
 
 import com.example.TipsManagement.model.LoggedUser;
-import com.example.TipsManagement.model.Transaction;
 import com.example.TipsManagement.model.dto.Request.TransactionRequest;
 import com.example.TipsManagement.model.dto.Response.TransactionResponse;
 import com.example.TipsManagement.service.TransactionService;
@@ -32,5 +31,4 @@ public class TransactionController {
                 .body(transactionService.withdraw(usuario.getId(),bancaId,transactionRequest));
     }
 
-//
 }
