@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -30,4 +31,6 @@ public class Transaction {
 
     @ManyToOne
     private Bet bet;
+
+    private UUID transferId;
 }
