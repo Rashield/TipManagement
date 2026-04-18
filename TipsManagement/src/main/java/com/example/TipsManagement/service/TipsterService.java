@@ -3,6 +3,7 @@ package com.example.TipsManagement.service;
 import com.example.TipsManagement.Exception.BadRequestException;
 import com.example.TipsManagement.Exception.BusinessException;
 import com.example.TipsManagement.Exception.NotFoundException;
+import com.example.TipsManagement.mapper.TipsterMapper;
 import com.example.TipsManagement.model.dto.Request.TipsterRequest;
 import com.example.TipsManagement.model.Tipster;
 import com.example.TipsManagement.model.Usuario;
@@ -17,27 +18,26 @@ import java.util.List;
 public class TipsterService {
 
     private final ITipsterRepository tipsterRepository;
-    private final ObjectMapper mapper;
+    private final TipsterMapper tipsterMapper;
 
-    public TipsterService(ITipsterRepository iTipsterRepository, ObjectMapper mapper) {
+    public TipsterService(ITipsterRepository iTipsterRepository, ObjectMapper mapper, TipsterMapper tipsterMapper) {
         this.tipsterRepository = iTipsterRepository;
-        this.mapper = mapper;
+        this.tipsterMapper = tipsterMapper;
     }
 
     public TipsterResponse save(Long userId, TipsterRequest tipsterRequest){
         if(tipsterRepository.existsByName(tipsterRequest.getName())){
             throw new BusinessException("Já existe um tipster com esse nome");
         }
-        if(tipsterRequest.getName().length()<3){
-            throw new BadRequestException("Número de caracteres insuficiente (min. 3)");
-        }
+        validateLength(tipsterRequest.getName());
 
-        Tipster tipster = mapper.convertValue(tipsterRequest,Tipster.class);
+        Tipster tipster = new Tipster();
+        tipster.setName(tipsterRequest.getName());
         //Usa o ID recebido para salvar o usuario_id do tipster
         Usuario usuario = new Usuario();
         usuario.setId(userId);
         tipster.setUsuario(usuario);
-        return mapper.convertValue(tipsterRepository.save(tipster), TipsterResponse.class);
+        return tipsterMapper.toResponse(tipsterRepository.save(tipster));
     }
 
     public List<TipsterResponse> listAll(Long userId){
@@ -47,28 +47,35 @@ public class TipsterService {
         }
         //Retorna a lista convertida para TipsterResponse, evitando passar dados do usuario cadastrado
         return list.stream()
-                .map(tipster -> mapper.convertValue(tipster, TipsterResponse.class))
+                .map(tipster -> tipsterMapper.toResponse(tipster))
                 .toList();
     }
 
     public TipsterResponse edit(Long userId, Long id,TipsterRequest tipsterRequest){
-        if(tipsterRequest.getName().length()<3){
-            throw new BadRequestException("Número de caracteres insuficiente (min. 3)");
-        }
+        validateLength(tipsterRequest.getName());
 
         Tipster tipster = tipsterRepository.findByIdAndUsuarioId(id, userId)
                             .orElseThrow(() ->
                                     new NotFoundException("Tipster não encontrado"));
 
         tipster.setName(tipsterRequest.getName());
-        return mapper.convertValue(tipsterRepository.save(tipster), TipsterResponse.class);
+        return tipsterMapper.toResponse(tipster);
     }
 
     public void delete(Long userId, Long id){
-        Tipster tipster = tipsterRepository.findByIdAndUsuarioId(userId, id)
-                .orElseThrow(() ->
-                        new NotFoundException("Tipster não encontrado"));
+        Tipster tipster = getOwnedTipster(id, userId);
 
         tipsterRepository.delete(tipster);
+    }
+
+    public Tipster getOwnedTipster(Long userId, Long id){
+       return tipsterRepository.findByIdAndUsuarioId(id, userId)
+                .orElseThrow(() ->
+                        new NotFoundException("Tipster não encontrado"));
+    }
+    public void validateLength(String name){
+        if (name == null || name.trim().length() < 3) {
+            throw new BadRequestException("Nome deve ter no mínimo 3 caracteres");
+        }
     }
 }
