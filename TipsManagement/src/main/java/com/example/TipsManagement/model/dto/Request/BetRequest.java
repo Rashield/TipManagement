@@ -3,10 +3,11 @@ package com.example.TipsManagement.model.dto.Request;
 import com.example.TipsManagement.model.BetHouse;
 import com.example.TipsManagement.model.Tipster;
 import com.example.TipsManagement.model.Usuario;
-import com.example.TipsManagement.model.enums.Result;
 import com.example.TipsManagement.model.enums.Sport;
+import com.example.TipsManagement.model.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,32 +16,33 @@ import java.time.LocalDate;
 @Data
 public class BetRequest {
 
-    private BetHouse betHouse;
+    @NotNull
+    private Long bancaId;
 
-    private Tipster tipster;
+    @NotNull
+    private Long tipsterId;
 
-    private Usuario usuario;
-
-    @Enumerated(EnumType.STRING)
     private Sport sport;
 
+    @Positive
+    @NotNull
     private BigDecimal odd;
 
-    @Enumerated(EnumType.STRING)
-    private Result result;
+    private Status status;
 
-    private String teamA;
+    private String homeTeam;
 
-    private String teamB;
+    private String awayTeam;
 
     private String description;
 
 //    @Enumerated(EnumType.STRING)
 //    private TipMethod tipMethod;
 
-    private LocalDate date;
+    private LocalDate matchDate;
 
     @NotNull
-    private BigDecimal unit; // Ex: 1U, 2.5U
+    @Positive
+    private BigDecimal unit;
 
 }
