@@ -1,7 +1,7 @@
 package com.example.TipsManagement.model;
 
-import com.example.TipsManagement.model.enums.Result;
 import com.example.TipsManagement.model.enums.Sport;
+import com.example.TipsManagement.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,8 +20,8 @@ public class Bet {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name = "BetHouse_id")
-    private BetHouse betHouse;
+    @JoinColumn (name = "Banca_id")
+    private Banca banca;
 
     @ManyToOne
     @JoinColumn (name = "Tipster_id")
@@ -38,27 +38,27 @@ public class Bet {
     private BigDecimal odd;
 
     @Enumerated(EnumType.STRING)
-    private Result result;
+    private Status status;
 
-    private BigDecimal resultValue; //deve ser unitValue * unit * odd
+    private String homeTeam;
 
-    private String teamA;
-
-    private String teamB;
+    private String awayTeam;
 
     private String description;
 
 //    @Enumerated(EnumType.STRING)
 //    private TipMethod tipMethod;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    private LocalDate matchDate;
 
     @Column(nullable = false)
     private BigDecimal unit; // Ex: 1U, 2.5U
 
     @Column(nullable = false)
-    private BigDecimal unitValue; // VALOR em R$ na data
+    private BigDecimal unitValue;// VALOR em R$ na data
 
+    private BigDecimal stake; //unit * unitvalue
 
+    private BigDecimal profit;
+    private BigDecimal resultValue; //deve ser unitValue * unit * odd
 }
