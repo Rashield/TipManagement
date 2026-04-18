@@ -52,9 +52,15 @@ public class BancaService {
     }
 
     public BancaResponse list(Long userId, Long id){
-        Banca banca = bancaRepository.findByBetHouseIdAndBetHouse_UsuarioId(id, userId)
-                .orElseThrow(()->
-                        new NotFoundException("Não existe Banca com os parâmetros fornecidos."));
+        Banca banca = getOwnedBanca(userId, id);
+
         return bancaMapper.toResponse(banca);
+    }
+
+    //metodo para validar se a banca existe, vai ser usado em todas transações/Bets
+    public Banca getOwnedBanca(Long userId,Long bancaId) {
+        return bancaRepository.findByIdAndBetHouse_UsuarioId(bancaId, userId)
+                .orElseThrow(() ->
+                        new NotFoundException("Não existe Banca com os parâmetros fornecidos."));
     }
 }
