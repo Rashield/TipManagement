@@ -23,7 +23,7 @@ public class Banca {
     @Column(nullable = false)
     private BigDecimal totalWithdraw = BigDecimal.ZERO;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "bethouse_id")
     private BetHouse betHouse;
 
