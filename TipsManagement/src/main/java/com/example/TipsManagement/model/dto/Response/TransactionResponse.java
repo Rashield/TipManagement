@@ -1,6 +1,5 @@
 package com.example.TipsManagement.model.dto.Response;
 
-import com.example.TipsManagement.model.Bet;
 import com.example.TipsManagement.model.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -16,5 +15,5 @@ public class TransactionResponse {
     private TransactionType transactionType;
     private LocalDate date;
     private BancaResponse banca;
-    private Bet bet;
+    private BetResponse bet;
 }
