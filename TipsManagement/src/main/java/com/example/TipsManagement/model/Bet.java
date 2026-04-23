@@ -59,6 +59,6 @@ public class Bet {
 
     private BigDecimal stake; //unit * unitvalue
 
-    private BigDecimal profit;
-    private BigDecimal resultValue; //deve ser unitValue * unit * odd
+    private BigDecimal profit; //stake * (odd -1)
+    private BigDecimal totalValue; //deve ser STAKE * odd
 }
