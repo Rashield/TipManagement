@@ -1,7 +1,6 @@
 package com.example.TipsManagement.model;
 
 import com.example.TipsManagement.model.enums.TransactionType;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +29,7 @@ public class Transaction {
     private Banca banca;
 
     @ManyToOne
+    @JoinColumn(name = "bet_id")
     private Bet bet;
 
     private UUID transferId;
