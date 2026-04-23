@@ -57,20 +57,22 @@ public class BetHouseService {
         if(betHouseRequest.getName().length()<3){
             throw new BadRequestException("Número de caracteres insuficiente (min. 3)");
         }
-        BetHouse betHouse = betHouseRepository.findByIdAndUsuarioId(id, userId)
-                .orElseThrow(() ->
-                        new NotFoundException("Não existe casa de Aposta com esse Id."));
+        BetHouse betHouse = getOwnedBetHouse(id, userId);
         betHouse.setName(betHouseRequest.getName());
         return mapper.convertValue(betHouseRepository.save(betHouse), BetHouseResponse.class);
     }
 
     public void delete(Long userId, Long id){
-        BetHouse betHouse = betHouseRepository.findByIdAndUsuarioId(id, userId)
-                .orElseThrow(() ->
-                        new NotFoundException("Não existe casa de Aposta com esse Id."));
+        BetHouse betHouse = getOwnedBetHouse(id, userId);
 
         bancaRepository.findByIdAndBetHouse_UsuarioId(id, userId)
                 .ifPresent(bancaRepository::delete);
         betHouseRepository.delete(betHouse);
+    }
+
+    public BetHouse getOwnedBetHouse(Long userId, Long betHouseId){
+        return betHouseRepository.findByIdAndUsuarioId(betHouseId, userId)
+                .orElseThrow(() ->
+                        new NotFoundException("Não existe casa de Aposta com esse Id."));
     }
 }
