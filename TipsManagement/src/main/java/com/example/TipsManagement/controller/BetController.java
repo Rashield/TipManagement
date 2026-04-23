@@ -2,11 +2,10 @@ package com.example.TipsManagement.controller;
 
 import com.example.TipsManagement.model.LoggedUser;
 import com.example.TipsManagement.model.dto.Request.BetRequest;
+import com.example.TipsManagement.model.dto.Request.BetStatusRequest;
 import com.example.TipsManagement.model.dto.Response.BetResponse;
 import com.example.TipsManagement.service.BetService;
 import jakarta.validation.Valid;
-import lombok.Getter;
-import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +29,12 @@ public class BetController {
     public ResponseEntity<BetResponse> updateBet(@AuthenticationPrincipal LoggedUser usuario, @RequestBody @Valid BetRequest betRequest, @PathVariable Long betId){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(betService.update(usuario.getId(), betId, betRequest));
+    }
+
+    @PatchMapping("/{betId}/status")
+    public ResponseEntity<BetResponse> updateBetStatus(@AuthenticationPrincipal LoggedUser usuario, @RequestBody BetStatusRequest betStatusRequest, @PathVariable Long betId){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(betService.updateBetStatus(usuario.getId(), betId, betStatusRequest));
     }
 
     @GetMapping
