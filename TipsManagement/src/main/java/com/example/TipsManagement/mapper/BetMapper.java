@@ -31,7 +31,7 @@ public class BetMapper {
         betResponse.setUnitValue(bet.getUnitValue());
         betResponse.setStake(bet.getStake());
         betResponse.setProfit(bet.getProfit());
-        betResponse.setResultValue(bet.getResultValue());
+        betResponse.setTotalValue(bet.getTotalValue());
 
         return betResponse;
     }

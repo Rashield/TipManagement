@@ -24,5 +24,5 @@ public class BetResponse {
     private BigDecimal unitValue;
     private BigDecimal stake;
     private BigDecimal profit;
-    private BigDecimal resultValue;
+    private BigDecimal totalValue;
 }
