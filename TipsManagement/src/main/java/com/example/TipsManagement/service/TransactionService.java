@@ -1,6 +1,7 @@
 package com.example.TipsManagement.service;
 
 import com.example.TipsManagement.Exception.BusinessException;
+import com.example.TipsManagement.Exception.NotFoundException;
 import com.example.TipsManagement.mapper.TransactionMapper;
 import com.example.TipsManagement.mapper.TransferMapper;
 import com.example.TipsManagement.model.Banca;
@@ -10,6 +11,7 @@ import com.example.TipsManagement.model.dto.Request.TransactionRequest;
 import com.example.TipsManagement.model.dto.Request.TransferRequest;
 import com.example.TipsManagement.model.dto.Response.TransactionResponse;
 import com.example.TipsManagement.model.dto.Response.TransferResponse;
+import com.example.TipsManagement.model.enums.Status;
 import com.example.TipsManagement.model.enums.TransactionType;
 import com.example.TipsManagement.repository.IBancaRepository;
 import com.example.TipsManagement.repository.ITransactionRepository;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -55,18 +58,27 @@ public class TransactionService {
 
 
     @Transactional
-    public Transaction createBetTransaction(Bet bet){
+    public Transaction openBet(Bet bet){
         bet.getBanca().withdraw(bet.getStake());
         Transaction transaction = createTransaction(bet.getBanca(), bet.getStake(),TransactionType.BET);
         transaction.setBet(bet);
         return transactionRepository.save(transaction);
     }
 
-    @Transactional Transaction betWin(Bet bet){
-        bet.getBanca().deposit(bet.getResultValue());
-        Transaction transaction = createTransaction(bet.getBanca(), bet.getResultValue(), TransactionType.BET_WIN);
+    @Transactional
+    public Transaction betWin(Bet bet){
+        bet.getBanca().deposit(bet.getTotalValue());
+        Transaction transaction = createTransaction(bet.getBanca(), bet.getTotalValue(), TransactionType.BET_WIN);
         transaction.setBet(bet);
         return transactionRepository.save(transaction);
+    }
+
+    @Transactional
+    public void betVoid(Bet bet){
+        bet.getBanca().deposit(bet.getStake());
+        Transaction transaction = createTransaction(bet.getBanca(), bet.getStake(),TransactionType.BET_VOID);
+        transaction.setBet(bet);
+        transactionRepository.save(transaction);
     }
 
     @Transactional
@@ -94,9 +106,40 @@ public class TransactionService {
 
     }
 
+    @Transactional
+    public void deleteTransactionFromBet(Bet bet, Status oldStatus){
+        //se for repassada uma bet com status Green, busca a transação de WIN e apaga somente ela, deixando a transacao de retirada criada ao salvar a Bet
+        if(oldStatus.equals(Status.GREEN)){
+            List<Transaction> transactions = transactionRepository.findByBetIdAndTransactionType(bet.getId(), TransactionType.BET_WIN);
+            for (Transaction transaction : transactions) {
+
+                Banca banca = transaction.getBanca();
+
+                // reverte o saldo (era um crédito)
+                banca.withdraw(transaction.getAmount());
+
+                transactionRepository.delete(transaction);
+            }
+        }
+        if(oldStatus.equals(Status.VOID)){
+            List<Transaction> transactions = transactionRepository.findByBetIdAndTransactionType(bet.getId(), TransactionType.BET_VOID);
+            for (Transaction transaction : transactions) {
+
+                Banca banca = transaction.getBanca();
+
+                // reverte o saldo (era um crédito)
+                banca.withdraw(transaction.getAmount());
+
+                transactionRepository.delete(transaction);
+            }
+        }
+
+    }
 
 
-    //metodo para criar uma transação, será usada em todas tranasções, visa evitar duplicação
+
+
+    //metodo para criar uma transação, será usada em todas transações, visa evitar duplicação
     private Transaction createTransaction(Banca banca, BigDecimal amount, TransactionType type) {
         Transaction transaction = new Transaction();
         transaction.setBanca(banca);
@@ -105,4 +148,12 @@ public class TransactionService {
         transaction.setDate(LocalDate.now());
         return transaction;
     }
+
+//    private Transaction getOwnedTransaction(Long userId, Long transactionId) {
+//        return transactionRepository
+//                .findByIdAndBanca_BetHouse_UsuarioId(transactionId, userId)
+//                .orElseThrow(() -> new NotFoundException("Transação não encontrada"));
+//    }
+
+    //public List<TransferResponse> listAllTransactions
 }
