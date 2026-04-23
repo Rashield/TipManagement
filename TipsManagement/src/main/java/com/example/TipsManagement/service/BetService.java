@@ -1,5 +1,7 @@
 package com.example.TipsManagement.service;
 
+import com.example.TipsManagement.Exception.BusinessException;
+import com.example.TipsManagement.Exception.NotFoundException;
 import com.example.TipsManagement.mapper.BetMapper;
 import com.example.TipsManagement.model.Banca;
 import com.example.TipsManagement.model.Bet;
@@ -12,6 +14,8 @@ import com.example.TipsManagement.repository.IBetRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 
 @Service
 public class BetService {
@@ -66,9 +70,9 @@ public class BetService {
         bet.setMatchDate(betRequest.getMatchDate());
         bet.setUnit(betRequest.getUnit());
         bet.setUnitValue(unitValueService.getCurrentUnit(userId).getUnitValue());
-        bet.setStake(bet.getUnit().multiply(bet.getUnitValue()));
+        bet.setStake(calculateStake(bet));
         bet.setProfit(calculateProfit(bet));
-        bet.setResultValue(calculateResultValue(bet));
+        bet.setTotalValue(calculateTotalValue(bet));
 
         return bet;
     }
@@ -86,20 +90,121 @@ public class BetService {
 
         return BigDecimal.ZERO;
     }
-    private BigDecimal calculateResultValue(Bet bet) {
+    private BigDecimal calculateTotalValue(Bet bet) {
 
         if (bet.getStatus() == Status.GREEN) {
             return bet.getStake().multiply(bet.getOdd());
         }
         return BigDecimal.ZERO;
     }
+    private BigDecimal calculateStake(Bet bet){
+        return bet.getUnit().multiply(bet.getUnitValue());
+    }
     private void processBetFinancials(Bet bet){
         // Sempre retira o valor da aposta do saldo
-        transactionService.createBetTransaction(bet);
+        transactionService.openBet(bet);
 
         // Se for cadastrada como green deposita o lucro
         if (bet.getStatus() == Status.GREEN) {
             transactionService.betWin(bet);
         }
+    }
+
+    public BetResponse update(Long userId, Long betId, BetRequest betRequest){
+        Bet bet = getOwnedBet(userId, betId);
+        //Valida se a banca do request é a mesma da Bet já salva, por padrão não será aceita essa alteração
+        Banca banca = bancaService.getOwnedBanca(userId, betRequest.getBancaId());
+        if (!banca.getId().equals(bet.getBanca().getId())) {
+            throw new BusinessException("Não é permitido alterar a banca da bet");
+        }
+
+        Tipster tipster = tipsterService.getOwnedTipster(userId, betRequest.getTipsterId());
+
+        //Salva valores atuais importantes da Bet
+        BigDecimal oldOdd = bet.getOdd();
+        Status oldStatus = bet.getStatus();
+        BigDecimal oldUnit = bet.getUnit();
+
+        bet.setTipster(tipster);
+        bet.setSport(betRequest.getSport());
+        bet.setOdd(betRequest.getOdd());
+        bet.setStatus(betRequest.getStatus());
+        bet.setHomeTeam(betRequest.getHomeTeam());
+        bet.setAwayTeam(betRequest.getAwayTeam());
+        bet.setDescription(betRequest.getDescription());
+        bet.setMatchDate(betRequest.getMatchDate());
+        bet.setUnit(betRequest.getUnit());
+
+        if (!oldOdd.equals(bet.getOdd()) ||
+                !oldStatus.equals(bet.getStatus()) ||
+                !oldUnit.equals(bet.getUnit())) {
+
+            bet.setStake(calculateStake(bet));
+            bet.setTotalValue(calculateTotalValue(bet));
+            bet.setProfit(calculateProfit(bet));
+        }
+
+        handleBetStatusChange(oldStatus, bet);
+
+        betRepository.save(bet);
+
+        return betMapper.toResponse(bet);
+    }
+
+    private void handleBetStatusChange(Status oldStatus, Bet bet) {
+        Status newStatus = bet.getStatus();
+        Banca banca = bet.getBanca();
+        //Altera pending/ red
+        if (oldStatus.equals(Status.PENDING) || oldStatus.equals(Status.RED)) {
+            switch (newStatus) {
+
+                case GREEN -> transactionService.betWin(bet);
+
+                case VOID -> transactionService.betVoid(bet);
+
+                default -> {
+                    // não faz nada, pois se for de pending -> red ou red -> pending o valor já foi debitado no cadastro da bet
+                }
+            }
+        }
+        //altera green
+        if (oldStatus.equals(Status.GREEN)) {
+
+            switch (newStatus) {
+
+                case RED, PENDING -> {
+                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                }
+                case VOID -> {
+                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                    transactionService.betVoid(bet);
+                }
+            }
+        }
+        //altera bet anulada
+        if(oldStatus.equals(Status.VOID)){
+            switch (newStatus) {
+                case GREEN -> {
+                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                    transactionService.betWin(bet);
+                }
+                case RED, PENDING ->{
+                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                }
+            }
+        }
+    }
+
+
+    public List<BetResponse> listAll(Long userId){
+        List<Bet> bets = betRepository.findAllByUsuarioId(userId);
+        return bets.stream()
+                .map(bet -> betMapper.toResponse(bet))
+                .toList();
+    }
+
+    private Bet getOwnedBet(Long userId, Long betId){
+        return betRepository.findByIdAndUsuarioId(betId, userId)
+                .orElseThrow(()-> new NotFoundException("Não existe bet cadastrada com esse Id."));
     }
 }
