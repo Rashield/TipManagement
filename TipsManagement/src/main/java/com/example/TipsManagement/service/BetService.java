@@ -8,6 +8,7 @@ import com.example.TipsManagement.model.Bet;
 import com.example.TipsManagement.model.Tipster;
 import com.example.TipsManagement.model.Usuario;
 import com.example.TipsManagement.model.dto.Request.BetRequest;
+import com.example.TipsManagement.model.dto.Request.BetStatusRequest;
 import com.example.TipsManagement.model.dto.Response.BetResponse;
 import com.example.TipsManagement.model.enums.Status;
 import com.example.TipsManagement.repository.IBetRepository;
@@ -138,10 +139,8 @@ public class BetService {
         if (!oldOdd.equals(bet.getOdd()) ||
                 !oldStatus.equals(bet.getStatus()) ||
                 !oldUnit.equals(bet.getUnit())) {
+                    recalculateBetValues(bet);
 
-            bet.setStake(calculateStake(bet));
-            bet.setTotalValue(calculateTotalValue(bet));
-            bet.setProfit(calculateProfit(bet));
         }
 
         handleBetStatusChange(oldStatus, bet);
@@ -149,6 +148,11 @@ public class BetService {
         betRepository.save(bet);
 
         return betMapper.toResponse(bet);
+    }
+    private void recalculateBetValues(Bet bet){
+        bet.setStake(calculateStake(bet));
+        bet.setTotalValue(calculateTotalValue(bet));
+        bet.setProfit(calculateProfit(bet));
     }
 
     private void handleBetStatusChange(Status oldStatus, Bet bet) {
@@ -193,6 +197,15 @@ public class BetService {
                 }
             }
         }
+    }
+    public BetResponse updateBetStatus(Long userId, Long betId, BetStatusRequest betStatusRequest){
+        Bet bet = getOwnedBet(userId, betId);
+        Status oldStatus = bet.getStatus();
+        bet.setStatus(betStatusRequest.getStatus());
+        handleBetStatusChange(oldStatus, bet);
+        recalculateBetValues(bet);
+        betRepository.save(bet);
+        return betMapper.toResponse(bet);
     }
 
 

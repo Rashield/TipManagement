@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface IBetHouseRepository extends JpaRepository<BetHouse, Long> {
     boolean existsByUsuarioIdAndName(Long userId, String name);
     List<BetHouse> findAllByUsuarioId(Long userId);
-    Optional<BetHouse> findByIdAndUsuarioId(Long id, Long userId);
+    Optional<BetHouse> findByIdAndUsuarioId(Long betHouseId, Long userId);
 }
