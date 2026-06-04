@@ -157,7 +157,6 @@ public class BetService {
 
     private void handleBetStatusChange(Status oldStatus, Bet bet) {
         Status newStatus = bet.getStatus();
-        Banca banca = bet.getBanca();
         //Altera pending/ red
         if (oldStatus.equals(Status.PENDING) || oldStatus.equals(Status.RED)) {
             switch (newStatus) {
@@ -177,10 +176,10 @@ public class BetService {
             switch (newStatus) {
 
                 case RED, PENDING -> {
-                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                    transactionService.deleteTransactionFromUpdateBet(bet, oldStatus);
                 }
                 case VOID -> {
-                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                    transactionService.deleteTransactionFromUpdateBet(bet, oldStatus);
                     transactionService.betVoid(bet);
                 }
             }
@@ -189,11 +188,11 @@ public class BetService {
         if(oldStatus.equals(Status.VOID)){
             switch (newStatus) {
                 case GREEN -> {
-                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                    transactionService.deleteTransactionFromUpdateBet(bet, oldStatus);
                     transactionService.betWin(bet);
                 }
                 case RED, PENDING ->{
-                    transactionService.deleteTransactionFromBet(bet, oldStatus);
+                    transactionService.deleteTransactionFromUpdateBet(bet, oldStatus);
                 }
             }
         }
@@ -202,10 +201,18 @@ public class BetService {
         Bet bet = getOwnedBet(userId, betId);
         Status oldStatus = bet.getStatus();
         bet.setStatus(betStatusRequest.getStatus());
-        handleBetStatusChange(oldStatus, bet);
         recalculateBetValues(bet);
+        handleBetStatusChange(oldStatus, bet);
+
         betRepository.save(bet);
         return betMapper.toResponse(bet);
+    }
+
+
+    public void delete(Long userId, Long betId){
+        Bet bet = getOwnedBet(userId, betId);
+        transactionService.deleteTransactionBetFromDeleteBet(bet);
+        betRepository.delete(bet);
     }
 
 
