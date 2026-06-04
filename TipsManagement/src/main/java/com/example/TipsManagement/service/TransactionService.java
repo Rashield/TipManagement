@@ -80,12 +80,12 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    // TODO: 06/06/2026 necessario testar se esta funcional, ultimos testes no postman não rodaram
+
     @Transactional
     public TransferResponse transfer(Long userId, TransferRequest transferRequest) {
         //validações
-        Banca toBanca = bancaService.getOwnedBanca(transferRequest.getToBancaId(), userId);
-        Banca fromBanca = bancaService.getOwnedBanca(transferRequest.getFromBancaId(), userId);
+        Banca toBanca = bancaService.getOwnedBanca(userId, transferRequest.getToBancaId());
+        Banca fromBanca = bancaService.getOwnedBanca(userId, transferRequest.getFromBancaId());
         if (toBanca.equals(fromBanca)) {
             throw new BusinessException("Não pode transferir para a mesma banca");
         }
