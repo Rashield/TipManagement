@@ -1,4 +1,4 @@
-package com.example.TipsManagement.model.dto.Response;
+package com.example.TipsManagement.Exception;
 
 import lombok.Data;
 
@@ -18,6 +18,4 @@ public class ErrorResponse {
         this.message = message;
         this.path = path;
     }
-
-    // getters
 }
