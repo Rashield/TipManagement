@@ -83,7 +83,6 @@ public class TransactionService {
 
     @Transactional
     public TransferResponse transfer(Long userId, TransferRequest transferRequest) {
-        //validações
         Banca toBanca = bancaService.getOwnedBanca(userId, transferRequest.getToBancaId());
         Banca fromBanca = bancaService.getOwnedBanca(userId, transferRequest.getFromBancaId());
         if (toBanca.equals(fromBanca)) {
