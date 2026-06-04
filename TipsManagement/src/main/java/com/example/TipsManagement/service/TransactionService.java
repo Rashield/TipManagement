@@ -1,7 +1,6 @@
 package com.example.TipsManagement.service;
 
 import com.example.TipsManagement.Exception.BusinessException;
-import com.example.TipsManagement.Exception.NotFoundException;
 import com.example.TipsManagement.mapper.TransactionMapper;
 import com.example.TipsManagement.mapper.TransferMapper;
 import com.example.TipsManagement.model.Banca;
@@ -41,7 +40,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionResponse deposit(Long userId, Long bancaId, TransactionRequest transactionRequest){
+    public TransactionResponse deposit(Long userId, Long bancaId, TransactionRequest transactionRequest) {
         Banca banca = bancaService.getOwnedBanca(bancaId, userId); // busca banca fornecida
         banca.deposit(transactionRequest.getAmount()); //chama o metodo de deposito da entidade Banca para depositar o valor
         Transaction transaction = createTransaction(banca, transactionRequest.getAmount(), TransactionType.DEPOSIT);//chama a funcao para criar uma transacao
@@ -49,24 +48,24 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionResponse withdraw(Long userId, Long bancaId, TransactionRequest transactionRequest){
+    public TransactionResponse withdraw(Long userId, Long bancaId, TransactionRequest transactionRequest) {
         Banca banca = bancaService.getOwnedBanca(bancaId, userId);
         banca.withdraw(transactionRequest.getAmount());
-        Transaction transaction = createTransaction(banca,transactionRequest.getAmount(),TransactionType.WITHDRAW);
+        Transaction transaction = createTransaction(banca, transactionRequest.getAmount(), TransactionType.WITHDRAW);
         return transactionMapper.toResponse(transactionRepository.save(transaction));
     }
 
 
     @Transactional
-    public Transaction openBet(Bet bet){
+    public Transaction openBet(Bet bet) {
         bet.getBanca().withdraw(bet.getStake());
-        Transaction transaction = createTransaction(bet.getBanca(), bet.getStake(),TransactionType.BET);
+        Transaction transaction = createTransaction(bet.getBanca(), bet.getStake(), TransactionType.BET);
         transaction.setBet(bet);
         return transactionRepository.save(transaction);
     }
 
     @Transactional
-    public Transaction betWin(Bet bet){
+    public Transaction betWin(Bet bet) {
         bet.getBanca().deposit(bet.getTotalValue());
         Transaction transaction = createTransaction(bet.getBanca(), bet.getTotalValue(), TransactionType.BET_WIN);
         transaction.setBet(bet);
@@ -74,15 +73,16 @@ public class TransactionService {
     }
 
     @Transactional
-    public void betVoid(Bet bet){
+    public void betVoid(Bet bet) {
         bet.getBanca().deposit(bet.getStake());
-        Transaction transaction = createTransaction(bet.getBanca(), bet.getStake(),TransactionType.BET_VOID);
+        Transaction transaction = createTransaction(bet.getBanca(), bet.getStake(), TransactionType.BET_VOID);
         transaction.setBet(bet);
         transactionRepository.save(transaction);
     }
 
+    // TODO: 06/06/2026 necessario testar se esta funcional, ultimos testes no postman não rodaram
     @Transactional
-    public TransferResponse transfer(Long userId, TransferRequest transferRequest){
+    public TransferResponse transfer(Long userId, TransferRequest transferRequest) {
         //validações
         Banca toBanca = bancaService.getOwnedBanca(transferRequest.getToBancaId(), userId);
         Banca fromBanca = bancaService.getOwnedBanca(transferRequest.getFromBancaId(), userId);
@@ -91,9 +91,9 @@ public class TransactionService {
         }
         //saque e deposito
         fromBanca.withdraw(transferRequest.getAmount());
-        Transaction transferWithdraw = createTransaction(fromBanca,transferRequest.getAmount(),TransactionType.WITHDRAW);
+        Transaction transferWithdraw = createTransaction(fromBanca, transferRequest.getAmount(), TransactionType.WITHDRAW);
         toBanca.deposit(transferRequest.getAmount());
-        Transaction transferdeposit = createTransaction(toBanca,transferRequest.getAmount(),TransactionType.DEPOSIT);
+        Transaction transferdeposit = createTransaction(toBanca, transferRequest.getAmount(), TransactionType.DEPOSIT);
 
         //seta o id da transferencia para ambos e salva ações em banco
         UUID transferId = UUID.randomUUID();
@@ -107,9 +107,9 @@ public class TransactionService {
     }
 
     @Transactional
-    public void deleteTransactionFromBet(Bet bet, Status oldStatus){
+    public void deleteTransactionFromUpdateBet(Bet bet, Status oldStatus) {
         //se for repassada uma bet com status Green, busca a transação de WIN e apaga somente ela, deixando a transacao de retirada criada ao salvar a Bet
-        if(oldStatus.equals(Status.GREEN)){
+        if (oldStatus.equals(Status.GREEN)) {
             List<Transaction> transactions = transactionRepository.findByBetIdAndTransactionType(bet.getId(), TransactionType.BET_WIN);
             for (Transaction transaction : transactions) {
 
@@ -121,7 +121,7 @@ public class TransactionService {
                 transactionRepository.delete(transaction);
             }
         }
-        if(oldStatus.equals(Status.VOID)){
+        if (oldStatus.equals(Status.VOID)) {
             List<Transaction> transactions = transactionRepository.findByBetIdAndTransactionType(bet.getId(), TransactionType.BET_VOID);
             for (Transaction transaction : transactions) {
 
@@ -133,10 +133,24 @@ public class TransactionService {
                 transactionRepository.delete(transaction);
             }
         }
-
     }
 
+    @Transactional
+    public void deleteTransactionBetFromDeleteBet(Bet bet) {
+        List<Transaction> transactions = transactionRepository.findByBetId(bet.getId());
 
+        transactions.forEach(transaction -> {
+
+            Banca banca = transaction.getBanca();
+
+            if (transaction.getTransactionType() == TransactionType.BET_WIN || transaction.getTransactionType() == TransactionType.BET_VOID) {
+                banca.withdraw(transaction.getAmount());
+            } else {
+                banca.deposit(transaction.getAmount());
+            }
+            transactionRepository.delete(transaction);
+        });
+    }
 
 
     //metodo para criar uma transação, será usada em todas transações, visa evitar duplicação
@@ -148,12 +162,6 @@ public class TransactionService {
         transaction.setDate(LocalDate.now());
         return transaction;
     }
-
-//    private Transaction getOwnedTransaction(Long userId, Long transactionId) {
-//        return transactionRepository
-//                .findByIdAndBanca_BetHouse_UsuarioId(transactionId, userId)
-//                .orElseThrow(() -> new NotFoundException("Transação não encontrada"));
-//    }
-
-    //public List<TransferResponse> listAllTransactions
 }
+
+
