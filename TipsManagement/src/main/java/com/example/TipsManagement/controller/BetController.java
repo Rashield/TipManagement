@@ -48,4 +48,10 @@ public class BetController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(betService.listAllPending(usuario.getId()));
     }
+
+    @DeleteMapping("/{betId}")
+    public ResponseEntity<Void> deleteBet(@AuthenticationPrincipal LoggedUser usuario, @PathVariable Long betId){
+        betService.delete(usuario.getId(), betId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
